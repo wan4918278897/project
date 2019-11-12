@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.jeecg.modules.scheduling.mapper.ScheduleSettingMapper">
+
+
+    <!--班次定义列表-->
+    <select id="scheduleSettingList" resultType="org.jeecg.modules.scheduling.entity.ScheduleSetting">
+      select a.id,a.week,a.num, b.schedule_type , b.id AS scheduleId from eg_schedule_setting AS a left join eg_schedule_define as b
+      on a.schedule_id=b.id
+    </select>
+</mapper>

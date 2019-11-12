@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.jeecg.modules.scheduling.mapper.ScheduleStaffMapper">
+
+    <resultMap id="BaseResultMap" type="org.jeecg.modules.scheduling.entity.ScheduleStaffForm">
+        <result column="id" property="id"/>
+        <result column="userId" property="userId"/>
+        <result column="realname" property="name"/>
+        <result column="sex" property="sex"/>
+        <result column="avatar" property="avatar"/>
+        <result column="phone" property="phone"/>
+        <result column="depart_name" property="deptName"/>
+        <result column="orgName" property="orgName"/>
+        <result column="rest_days" property="restDays"/>
+    </resultMap>
+
+    <!--值班人员列表-->
+    <select id="scheduleStaffList" resultMap="BaseResultMap" >
+        SELECT a.id ,a.rest_days,d.id as userId,d.realname,d.sex,d.avatar ,d.phone ,d.depart_name  FROM eg_schedule_staff AS a
+        INNER JOIN ( SELECT b.id,b.realname,b.sex,b.avatar ,b.phone ,c.depart_name  FROM sys_user AS b INNER JOIN sys_depart AS c
+        ON b.depart_id=c.id where b.realname like CONCAT ('%',#{queryValue}, '%')) AS d ON a.user_id = d.id
+    </select>
+</mapper>

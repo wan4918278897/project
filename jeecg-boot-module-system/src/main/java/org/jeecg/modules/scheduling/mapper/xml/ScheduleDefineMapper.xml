@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.jeecg.modules.scheduling.mapper.ScheduleDefineMapper">
+
+    <resultMap id="BaseResultMap" type="java.util.HashMap">
+        <result column="id" property="id"/>
+        <result column="week" property="week"/>
+        <result column="num" property="num"/>
+        <result column="type" property="type"/>
+        <result column="start_time" property="startTime"/>
+        <result column="end_time" property="endTime"/>
+        <result column="refuse_schedule" property="refuseSchedule"/>
+        <result column="schedule_describe" property="scheduleDescribe"/>
+        <result column="schedule_type" property="scheduleType"/>
+
+    </resultMap>
+
+    <!--关联查询所有设置班次-->
+    <select id="queryScheduleList" resultMap="BaseResultMap">
+        SELECT a.week, a.num,b.id,b.schedule_type,b.start_time,b.end_time,b.refuse_schedule,b.schedule_describe,b.schedule_status
+         FROM eg_schedule_setting AS a LEFT  JOIN eg_schedule_define AS b ON a.schedule_id = b.id where a.week >=#{week}
+         ORDER BY week ASC ,b.schedule_type ASC
+    </select>
+
+    <!--筛选合适的不在休息期的员工-->
+    <select id="selectPerson" resultType="java.util.HashMap">
+        SELECT a.user_id as userId FROM eg_schedule_staff AS a LEFT  JOIN eg_schedule_person AS b ON a.user_id = b.user_id where a.rest_days
+        not like CONCAT ('%',#{restDays}, '%') and b.schedule_define_id=#{defineId}
+    </select>
+
+    <select id="selectDefineList" resultType="java.util.HashMap">
+        SELECT id ,schedule_type AS scheduleType FROM eg_schedule_define
+    </select>
+</mapper>

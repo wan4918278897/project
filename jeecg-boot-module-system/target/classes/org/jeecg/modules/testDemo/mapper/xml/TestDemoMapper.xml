@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.jeecg.modules.testDemo.mapper.TestDemoMapper">
+
+    <!--事件上报编辑回显人员-->
+    <select id="indexNameSource" resultType="java.lang.String">
+        select  name from hust_basic_data where name like CONCAT ('%',#{name}, '%')
+    </select>
+
+    <select id="indexDepartSource" resultType="java.lang.String">
+        select  depart_name from hust_basic_data where depart_name like CONCAT ('%',#{departName}, '%')
+    </select>
+
+    <select id="indexAddressSource" resultType="java.lang.String">
+        select  address from hust_basic_data where address like CONCAT ('%',#{address}, '%')
+    </select>
+</mapper>

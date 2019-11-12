@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.jeecg.modules.emergencyduty.mapper.ContactsMapper">
+    <!-- 根据单位Id查询 -->
+    <select id="getUserByOrgId" resultType="java.util.HashMap">
+        select c.id,departId,d.depart_name as departName,orgId,orgName,dutyPhone,c.mobile,job,c.name,officePhone,sort from
+        (select a.id,a.depart_id as departId,duty_phone as dutyPhone,job,a.mobile,a.name,office_phone as officePhone,org_id as orgId,sort,b.depart_name as orgName
+        from eg_contacts_book as a left join sys_depart as b on (a.org_id = b.id)where  a.org_id=#{id}
+        <if test="name!=''">
+            and a.name like CONCAT ('%',#{name}, '%')
+        </if>
+        <if test="mobile!=''">
+            and a.mobile like CONCAT ('%',#{mobile}, '%')
+        </if>
+        <if test="officePhone!=''">
+            and a.office_phone like CONCAT ('%',#{officePhone}, '%')
+        </if>
+        )as c left join
+        sys_depart as d on c.departId=d.id
+        ORDER BY sort is null ,sort
+
+    </select>
+    <!-- 根据单位Id与部门Id查询 -->
+    <select id="getUserByOrgAndDepId" resultType="org.jeecg.modules.emergencyduty.entity.Contacts">
+        select * from eg_contacts_book where  dapart_id=#{departId} and org_id=#{orgId})
+
+    </select>
+
+    <!-- 根据部门Id查询 -->
+    <select id="getUserByDepId" resultType="java.util.HashMap">
+        select c.id,departId,d.depart_name as orgName,orgId,departName,dutyPhone,c.mobile,job,c.name,officePhone,sort from
+        (select a.id,a.depart_id as departId,duty_phone as dutyPhone,job,a.mobile,a.name,office_phone as officePhone,org_id as orgId,sort,b.depart_name as departName
+        from eg_contacts_book as a left join sys_depart as b on (a.depart_id=b.id)where a.depart_id=#{id}
+        <if test="name!=''">
+            and a.name like CONCAT ('%',#{name}, '%')
+        </if>
+        <if test="mobile!=''">
+            and a.mobile like CONCAT ('%',#{mobile}, '%')
+        </if>
+        <if test="officePhone!=''">
+            and a.office_phone like CONCAT ('%',#{officePhone}, '%')
+        </if>
+        )as c left join
+        sys_depart as d on c.orgId=d.id
+        ORDER BY sort is null ,sort
+
+
+    </select>
+
+</mapper>

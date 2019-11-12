@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.jeecg.modules.even.mapper.EventDealInformationMapper">
+
+    <!--上报事件列表详情处理人-->
+    <select id="findInformation" resultType="java.util.HashMap" parameterType="String">
+        select a.process ,a.result ,a.id,a.create_time,b.process as adProcess,b.result as adResult from  ev_report_deal AS a
+        inner join ev_report_auditing AS b ON a.id=b.deal_information_id WHERE b.report_id=#{reportId} ORDER BY a.create_time DESC
+
+    </select>
+
+</mapper>

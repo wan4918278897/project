@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.jeecg.modules.emergencyduty.mapper.BriefingMapper">
+
+    <resultMap id="EmergencyBriefing" type="org.jeecg.modules.emergencyduty.entity.EmergencyBriefing">
+        <result column="id" property="id" jdbcType="VARCHAR"/>
+        <result column="titile" property="titile" jdbcType="VARCHAR"/>
+        <result column="update_by" property="updateBy" jdbcType="VARCHAR"/>
+        <result column="context" property="context" jdbcType="VARCHAR"/>
+        <result column="realname" property="realname" jdbcType="VARCHAR"/>
+        <result column="bef_type" property="befType" jdbcType="VARCHAR"/>
+        <result column="report_time" property="reportTime" jdbcType="TIMESTAMP"/>
+        <result column="depart_name" property="departName" jdbcType="VARCHAR"/>
+        <result column="create_by" property="createBy" jdbcType="VARCHAR"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="org_id" property="orgId" jdbcType="VARCHAR"/>
+        <result column="publish_time" property="publishTime" jdbcType="TIMESTAMP"/>
+        <result column="reporter" property="reporter" jdbcType="VARCHAR"/>
+        <result column="review_status" property="reviewStatus" jdbcType="VARCHAR"/>
+        <result column="update_by" property="updateBy" jdbcType="VARCHAR"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <select id="queryList" resultMap="EmergencyBriefing" >
+       SELECT
+	eg_briefing.id,
+	context,
+	realname,
+	bef_type,
+	report_time,
+	depart_name,
+	eg_briefing.create_by,
+	eg_briefing.create_time,
+	eg_briefing.org_id,
+	eg_briefing.publish_time,
+	reporter,
+	review_status,
+	eg_briefing.title,
+	eg_briefing.update_by,
+	eg_briefing.update_time
+FROM
+	sys_user,
+	eg_briefing,
+	sys_depart
+WHERE
+	eg_briefing.reporter = sys_user.id
+AND sys_depart.id = eg_briefing.org_id
+
+
+        <if test="befType!=''">
+            AND eg_briefing.bef_type=#{befType}
+        </if>
+        <if test="title!=''">
+            AND eg_briefing.title like  CONCAT ('%',#{title}, '%')
+        </if>
+        <if test="reporter!=''">
+            AND eg_briefing.reporter=#{reporter}
+        </if>
+        <if test="pubStartDate!=''">
+            AND eg_briefing.publish_time between #{pubStartDate}and #{pubEndDate}
+        </if>
+        <if test="reviewStatus!=''">
+            AND eg_briefing.review_status=#{reviewStatus}
+        </if>
+ORDER by eg_briefing.create_time desc
+    </select>
+</mapper>

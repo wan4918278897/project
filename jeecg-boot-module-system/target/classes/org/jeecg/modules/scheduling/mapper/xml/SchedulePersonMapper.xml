@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.jeecg.modules.scheduling.mapper.SchedulePersonMapper">
+
+    <select id="findSchedulePerson" resultType="java.util.HashMap"  parameterType="String">
+        select a.id,a.realname  from   sys_user  AS  a inner join eg_schedule_person AS b  ON a.id=b.user_id WHERE b.schedule_define_id=#{id}
+    </select>
+
+</mapper>

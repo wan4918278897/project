@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.jeecg.modules.system.mapper.SysUserMapper">
+
+
+    <resultMap id="SysUser" type="org.jeecg.modules.system.entity.SysUser">
+        <!-- result属性映射非匹配字段 -->
+        <result column="id" property="id"/>
+        <result column="realName" property="realname"/>
+        <result column="sex" property="sex"/>
+        <result column="status" property="status"/>
+        <result column="departName" property="depart_name"/>
+
+    </resultMap>
+
+	<!-- 根据用户名查询 -->
+	<select id="getUserByName" resultType="org.jeecg.modules.system.entity.SysUser">
+		select * from  sys_user  where username = #{username}
+	</select>
+
+	<!-- 根据部门Id查询 -->
+	<select id="getUserByDepId" resultType="org.jeecg.modules.system.entity.SysUser">
+        SELECT * FROM sys_user AS a WHERE a.depart_id in (SELECT id FROM sys_depart WHERE id = #{departId} OR parent_id = #{departId})
+        <if test="username!=null and username!=''">
+			and username = #{username}
+		</if>
+	</select>
+
+	<!-- 根据角色Id查询 -->
+	<select id="getUserByRoleId" resultType="org.jeecg.modules.system.entity.SysUser">
+		select * from sys_user where id in (select user_id from sys_user_role where role_id=#{roleId})
+		<if test="username!=null and username!=''">
+			and username = #{username}
+		</if>
+	</select>
+	
+	<!--  修改用户部门code -->
+	<update id="updateUserDepart">
+		UPDATE sys_user SET org_code = #{orgCode} where username = #{username}
+	</update>
+
+    <!--<select id="queryByDepId" parameterType="Object"  resultType="java.util.HashMap">-->
+        <!--select a.id,a.realname,a.sex,a.STATUS,d.depart_name from sys_user AS a LEFT JOIN sys_depart as d ON a.depart_id = d.id-->
+        <!--or a.org_id = d.id where d.id=#{id}-->
+
+    <!--</select>-->
+
+    <!-- 根据部门Id查询关联的所有用户 -->
+    <select id="findListByDepId" resultType="org.jeecg.modules.system.entity.SysUser">
+      SELECT * FROM sys_user AS a WHERE a.depart_id in (SELECT id FROM sys_depart WHERE id = #{ids} OR
+        parent_id = #{ids})
+	</select>
+
+
+    <!-- 根据用户Id查询相关部门信息 -->
+    <select id="userDepartList" resultType="java.util.Map">
+      SELECT id ,depart_name as departName FROM sys_depart AS a  WHERE a.id in (SELECT depart_id FROM sys_user WHERE id = #{userId})
+	</select>
+
+</mapper>

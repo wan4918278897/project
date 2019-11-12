@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.jeecg.modules.scheduling.mapper.ScheduleDutyMapper">
+
+    <resultMap id="BaseResultMap" type="java.util.HashMap">
+        <result column="id" property="id"/>
+        <result column="start_time" property="startTime"/>
+        <result column="end_time" property="endTime"/>
+        <result column="start_date" property="startDate"/>
+        <result column="end_date" property="endDate"/>
+        <result column="user_id" property="userId"/>
+        <result column="schedule_id" property="scheduleId"/>
+    </resultMap>
+
+    <!--日历显示的数据及信息-->
+    <select id="calenderList" resultMap="BaseResultMap">
+        select id,start_time,end_time,start_date,end_date,user_id,schedule_id from eg_schedule_duty WHERE start_date between  #{startDate}  and #{endDate};
+    </select>
+
+</mapper>

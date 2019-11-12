@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.jeecg.modules.even.mapper.EventReportBacklogMapper">
+
+    <!--事件上报编辑回显人员-->
+    <select id="queryCopyPerson" resultType="java.util.HashMap" parameterType="String">
+        select  a.id ,b.realname from ev_report_backLog AS a left join sys_user AS b ON a.user_id=b.id WHERE a.report_id=#{id}
+    </select>
+
+    <!--上报事件列表详情处理人-->
+    <select id="queryDealList" resultType="java.util.HashMap"  parameterType="String">
+        select a.username,a.realname  from  sys_user AS  a inner join ev_report_backLog AS b  ON a.id=b.user_id WHERE b.report_id=#{id}
+    </select>
+</mapper>

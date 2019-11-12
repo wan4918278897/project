@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.jeecg.modules.system.mapper.SysJournalMapper">
+
+    <resultMap id="SysJournal" type="org.jeecg.modules.system.entity.SysJournalForm">
+        <result column="id" property="id" jdbcType="VARCHAR"/>
+        <result column="titile" property="titile" jdbcType="VARCHAR"/>
+        <result column="context" property="context" jdbcType="VARCHAR"/>
+        <result column="user_name" property="userName" jdbcType="VARCHAR"/>
+        <result column="write_time" property="writeTime" jdbcType="TIMESTAMP"/>
+        <result column="create_by" property="createBy" jdbcType="VARCHAR"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="update_by" property="updateBy" jdbcType="VARCHAR"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <select id="queryList" resultMap="SysJournal" >
+        SELECT
+        a.id,
+        a.create_time,
+        a.create_by,
+        a.update_time,
+        a.update_by,
+        a.user_id,
+        b.realname as user_name,
+        a.write_time,
+        a.title,
+        a.context
+        FROM
+        sys_journal as a,
+        sys_user as b
+
+        WHERE
+        a.user_id=b.id
+        <if test="title!=''">
+            AND a.title like  CONCAT ('%',#{title}, '%')
+        </if>
+        <if test="reporter!=''">
+            AND a.user_id=#{reporter}
+        </if>
+        <if test="checkDate!=''">
+            AND a.write_time like CONCAT (#{checkDate}, '%')
+        </if>
+        ORDER by a.write_time desc
+    </select>
+
+    <select id="selectByDate" resultType="java.lang.Integer" >
+
+        select count(*) from sys_journal where write_time like CONCAT (#{date}, '%')
+    </select>
+</mapper>

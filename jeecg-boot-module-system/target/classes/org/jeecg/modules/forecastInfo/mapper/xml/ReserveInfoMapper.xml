@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.jeecg.modules.forecastInfo.mapper.ReserveInfoMapper">
+
+    <resultMap id="BaseMap" type="java.util.HashMap">
+        <result column="id" property="id" />
+        <result column="administrative_division" property="administrativeDivision" />
+        <result column="date" property="date" javaType="DATE"/>
+        <result column="publish_org" property="publishOrg" />
+        <result column="reserve_statues" property="reserveStatues" javaType="int"   />
+
+    </resultMap>
+
+    <select id="reserveInfoList" resultMap="BaseMap">
+        select c.id,c.name,`code`,type,version,publish_org,reserve_statues,date,content,administrative_division,remark,d.depart_name as departName from(
+        SELECT a.id,a.name,`code`,b.name as type,a.create_time
+        ,version,publish_org,reserve_statues,date,content,administrative_division,remark FROM
+        ep_reserve_info AS a LEFT JOIN ep_reserve_setting AS b ON a.type = b.id
+        <if test="queryType == 'list'">
+            where user_id=#{userId}
+        </if>
+        <if test="queryType == 'backLogList'">
+            where a.reserve_statues ='0'
+        </if>
+        <if test="queryType == 'publishList'">
+            where a.reserve_statues >'0'
+        </if>
+        <if test="name !=null and name!= ''">
+            and a.name like CONCAT ('%',#{name}, '%')
+        </if>
+        <if test="type !=null and type!= ''">
+            and a.type =#{type}
+        </if>
+        <if test="publishOrg !=null and publishOrg!= ''">
+            and a.publish_org =#{publishOrg}
+        </if>
+        <if test="reserveStatues !=null and reserveStatues!= ''">
+            and a.reserve_statues =#{reserveStatues}
+        </if>
+        <if test="beginDate !=null and beginDate!= '' and endDate !=null and endDate!= ''">
+            and a.date between #{beginDate} and #{endDate}
+        </if>)as c
+        left join sys_depart as d on  c.publish_org=d.id
+        ORDER BY c.create_time DESC
+    </select>
+
+</mapper>

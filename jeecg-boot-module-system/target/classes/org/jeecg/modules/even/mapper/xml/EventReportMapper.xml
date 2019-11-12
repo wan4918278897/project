@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.jeecg.modules.even.mapper.EventReportMapper">
+
+    <resultMap id="BaseMap" type="java.util.HashMap">
+        <result column="id" property="id" />
+        <result column="administrative_division" property="administrativeDivision" />
+        <result column="date" property="date" javaType="DATE"/>
+        <result column="death_num" property="deathNum" />
+        <result column="even_describe" property="evenDescribe" />
+        <result column="even_status" property="evenStatus" javaType="int"/>
+        <result column="injured_num" property="injuredNum" />
+        <result column="miss_num" property="missNum" />
+        <result column="name" property="name" />
+        <result column="phone" property="phone" />
+        <result column="place" property="place" />
+        <result column="pre_plan_name" property="prePlanName" />
+        <result column="reason" property="reason" />
+        <result column="title" property="title" />
+
+    </resultMap>
+    <select id="reportList" resultMap="BaseMap">
+        SELECT a.id,administrative_division,date,death_num,even_describe,even_status,injured_num,miss_num,name,
+        phone,place,pre_plan_name,reason,title ,even_property as evenProperty,even_level as evenLevel ,even_type as evenType,b.event_name AS type
+        ,c.event_name as level ,d.event_name AS property,a.create_time
+        FROM ev_report_pre AS a LEFT JOIN ev_event_setting AS b ON a.even_type = b.id
+        LEFT JOIN ev_event_setting AS c ON a.even_level = c.id
+        LEFT JOIN ev_event_setting AS d ON a.even_property = d.id
+        <if test="listType== 'reportList'">
+            where a.apply_user=#{userId}
+        </if>
+        <if test="listType=='backlogList'">
+            WHERE a.id in (SELECT  report_id FROM ev_report_backLog WHERE user_id=#{userId})
+        </if>
+        <if test="listType=='finishList'">
+            WHERE a.id in (SELECT  report_id FROM ev_report_finish WHERE user_id=#{userId})
+        </if>
+        <if test="listType=='auditingList'">
+            WHERE a.even_status = #{evenStatus}
+        </if>
+        <if test="title !=null and title!= ''">
+            and a.title like CONCAT ('%',#{title}, '%')
+        </if>
+        <if test="beginDate !=null and beginDate!= '' and endDate !=null and endDate!= ''">
+        and a.date between   #{beginDate} and  #{endDate}
+        </if>
+        <if test="evenType !=null and evenType!= ''">
+        and a.even_type =#{evenType}
+        </if>
+        <if test="evenProperty !=null and evenProperty!= ''">
+        and a.even_property =#{evenProperty}
+        </if>
+        <if test="evenLevel !=null and evenLevel!= ''">
+        and a.even_level =#{evenLevel}
+        </if>
+        <if test="evenStatus !=null and evenStatus!= ''">
+            and a.even_status = #{evenStatus}
+        </if>
+        ORDER BY a.create_time DESC
+    </select>
+
+</mapper>
